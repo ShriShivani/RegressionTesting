@@ -1,0 +1,26 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: Maven@4
+    displayName: 'Run Maven Regression Tests'
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.17'
+      jdkArchitectureOption: 'x64'
+      mavenVersionOption: 'Default'
+      publishJUnitResults: false
+      goals: 'clean test'
+
+  - task: PublishTestResults@2
+    displayName: 'Publish JUnit Test Results'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      testRunTitle: 'JUnit Regression Test Results'
+      failTaskOnFailedTests: true
